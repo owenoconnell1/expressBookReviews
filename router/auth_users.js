@@ -1,68 +1,42 @@
-const express = require("express");
-const jwt = require("jsonwebtoken");
+const express = require('express');
+const jwt = require('jsonwebtoken');
 let books = require("./booksdb.js");
 const regd_users = express.Router();
 
 let users = [];
 
-//returns boolean
-const isValid = (username) => {
-  return users.some((user) => user.username === username);
-};
+const isValid = (username)=>{ //returns boolean
+    //write code to check is the username is valid
+    return users.some(user => user.username === username);
+}
 
-//returns boolean
-const authenticatedUser = (username, password) => {
-  return users.some(
-    (user) => user.username === username && user.password === password
-  );
-};
+const authenticatedUser = (username,password)=>{ //returns boolean
+    //write code to check if username and password match the one we have in records.
+    return users.some(user => user.username === username && user.password === password);
+}
 
-// /customer/login
-regd_users.post("/login", (req, res) => {
-  const username = req.body.username;
-  const password = req.body.password;
-
-  if (!username || !password) {
-    return res.status(400).json({ message: "Missing username or password" });
-  } else if (!authenticatedUser(username, password)) {
-    return res.status(401).json({ message: "Incorrect username or password" });
-  } else {
-    const accessToken = jwt.sign({ data: password }, "access", {
-      expiresIn: 60 * 60,
-    });
-    req.session.authorization = { accessToken, username };
-    return res.status(200).json({ message: "User successfully logged in." });
+//only registered users can login
+regd_users.post("/login", (req,res) => {
+  //Write your code here
+  if(!authenticatedUser(req.body.username, req.body.password)){
+    return res.status(401).json({message: "Credintials incorrect"})
   }
+  const accessToken = jwt.sign({username: req.body.username}, "access", {expiresIn: "1h"});
+  req.session.authorization = {username: req.body.username, accessToken};
+  return res.status(200).json({message: "Login successful", token: accessToken})
 });
 
 // Add a book review
-// /customer/auth/:isbn
 regd_users.put("/auth/review/:isbn", (req, res) => {
-  const user = req.session.authorization.username;
-  const review = req.body.review; // string
-  const isbn = req.params.isbn;
-  if (!review) {
-    res.status(400).json({ message: "Review is empty!" });
-  } else {
-    books[isbn].reviews[user] = review;
-    res.status(200).json({ message: "Book review updated." });
+  //Write your code here
+  if(!req.user.username){
+    return res.status(403).json({message: "user not authenticated"})
   }
-});
-
-// delete a review
-regd_users.delete("/auth/review/:isbn", (req, res) => {
-  const user = req.session.authorization.username;
-  const isbn = req.params.isbn;
-  if (!books[isbn]) {
-    res.status(400).json({ message: "invalid ISBN." });
-  } else if (!books[isbn].reviews[user]) {
-    res
-      .status(400)
-      .json({ message: `${user} hasn't submitted a review for this book.` });
-  } else {
-    delete books[isbn].reviews[user];
-    res.status(200).json({ message: "Book review deleted." });
+  if(!books[req.params.isbn]){
+    return res.status(404).json({message: "book not found"})
   }
+  books[req.params.isbn].reviews[req.user.username] = req.query.review;
+  return res.status(200).json({message: "review added by user:" + req.user.username + " Review: " +req.query.review});
 });
 
 module.exports.authenticated = regd_users;
