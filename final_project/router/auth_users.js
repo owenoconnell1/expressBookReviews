@@ -29,7 +29,7 @@ regd_users.post("/login", (req,res) => {
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
   //Write your code here
-  if(!req.user.username){
+  if(!req.user?.username){
     return res.status(403).json({message: "user not authenticated"})
   }
   if(!books[req.params.isbn]){
