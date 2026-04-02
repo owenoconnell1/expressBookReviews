@@ -19,24 +19,24 @@ const authenticatedUser = (username,password)=>{ //returns boolean
 regd_users.post("/login", (req,res) => {
   //Write your code here
   if(!authenticatedUser(req.body.username, req.body.password)){
-    return res.status(300).json({message: "Credintials incorrect"})
+    return res.status(401).json({message: "Credintials incorrect"})
   }
   const accessToken = jwt.sign({username: req.body.username}, "access", {expiresIn: "1h"});
   req.session.authorization = {username: req.body.username, accessToken};
-  return res.status(200).json({message: "Logged in"})
+  return res.status(200).json({message: "YOU HAVE SUCCESSFULLY LOGGED INTO YOUR ACCOUNT!!!!!!!"})
 });
 
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
   //Write your code here
-  if(!req.session.authorization.username){
+  if(!req.session.authorization?.username){
     return res.status(403).json({message: "user not authenticated"})
   }
   if(!books[req.params.isbn]){
     return res.status(404).json({message: "book not found"})
   }
   books[req.params.isbn].reviews[req.body.username] = req.body.review;
-  return res.status(200).json({message: "review added"});
+  return res.status(402).json({message: "review added"});
 });
 
 module.exports.authenticated = regd_users;
