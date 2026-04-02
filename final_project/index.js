@@ -8,7 +8,7 @@ const app = express();
 
 app.use(express.json());
 
-app.use("/customer",session({secret:"fingerprint_customer",resave: true, saveUninitialized: true}))
+app.use("/customer",session({secret:"access",resave: true, saveUninitialized: true}))
 
 app.use("/customer/auth/*", function auth(req,res,next){
 //Write the authenication mechanism here
@@ -18,7 +18,8 @@ app.use("/customer/auth/*", function auth(req,res,next){
     }
     const token = authHeader.split(" ")[1];
     try{
-        req.user = jwt.verify(token, "fingerprint_customer");
+        req.user = jwt.verify(token, "access");
+        next();
     }
     catch(error){
         return error;
