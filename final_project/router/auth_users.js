@@ -19,15 +19,19 @@ const authenticatedUser = (username,password)=>{ //returns boolean
 regd_users.post("/login", (req,res) => {
   //Write your code here
   if(!authenticatedUser(req.body.username, req.body.password)){
-    return res.status(401).json({message: "Credintials incorrect"})
+    return res.status(300).json({message: "Credintials incorrect"})
   }
-  const accessToken = jwt.sign({username: req.body.username}, "access", {expiration: "1h"});
+  const accessToken = jwt.sign({username: req.body.username}, "access", {expiresIn: "1h"});
+  req.session.authorization = {username: req.body.username, accessToken};
+  return res.status(200).json({message: "Logged in"})
 });
 
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
   //Write your code here
-  
+  if(authenticatedUser(req.body.username, req.body.password)){
+    books[isbn] = req.body.review;
+  }
   return res.status(300).json({message: "Yet to be implemented"});
 });
 
