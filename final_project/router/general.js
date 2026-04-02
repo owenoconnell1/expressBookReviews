@@ -14,9 +14,9 @@ public_users.post("/register", (req,res) => {
     return res.status(400).json({message: "username exists"});
   }
   let username = req.body.username;
-  let password = req.body.password
-  users.push({username, password})
-  return res.status(201).json({message: "user created"})
+  let password = req.body.password;
+  users.push({username, password});
+  return res.status(201).json({message: "SUCCESS SUCCESS SUCCESS USER HAS BEEN CREATED!!!!!!!!"});
 });
 
 // Get the book list available in the shop
@@ -35,24 +35,23 @@ public_users.get('/isbn/:isbn',function (req, res) {
   
 // Get book details based on author
 public_users.get('/author/:author',function (req, res) {
-  //Write your code here
-  if(books[req.params.author]){
-    return res.status(200).json(books[req.params.author]);
-}
+    //Write your code here
+    return res.status(200).json(Object.values(books).filter(book => book.author.toLowerCase() === req.params.author.toLowerCase()));
 });
 
 // Get all books based on title
 public_users.get('/title/:title',function (req, res) {
   //Write your code here
-  if(books[req.params.title]){
-    return res.status(200).json(books[req.params.title]);
-}});
+  return res.status(200).json(Object.values(books).filter(book => book.title.toLowerCase() === req.params.title.toLowerCase()));
+});
 
 //  Get book review
 public_users.get('/review/:isbn',function (req, res) {
-  //Write your code here
-  if(books[req.params.review]){
-    return res.status(200).json(books[req.params.review]);
-}});
+    //Write your code here
+    if(books[req.params.isbn]){
+        return res.status(200).json(books[req.params.isbn]);
+    }
+    return res.status(404).json({message: "Not found"});
+});
 
 module.exports.general = public_users;
