@@ -16,13 +16,18 @@ public_users.post("/register", (req,res) => {
   let username = req.body.username;
   let password = req.body.password;
   users.push({username, password});
-  return res.status(201).json({message: "SUCCESS SUCCESS SUCCESS USER HAS BEEN CREATED!!!!!!!!"});
+  return res.status(201).json({message: "User successfully registered. Now you can login"});
 });
 
 // Get the book list available in the shop
-public_users.get('/',function (req, res) {
+public_users.get('/',async (req, res) {
   //Write your code here
-    return res.status(200).json(books);
+  try{
+    return res.status(200).json(await getAllBooks());
+  }
+  catch(error){
+    res.status()
+  }
 });
 
 // Get book details based on ISBN
