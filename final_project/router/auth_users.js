@@ -35,8 +35,8 @@ regd_users.put("/auth/review/:isbn", (req, res) => {
   if(!books[req.params.isbn]){
     return res.status(404).json({message: "book not found"})
   }
-  books[req.params.isbn].reviews[req.body.username] = req.body.review;
-  return res.status(402).json({message: "review added"});
+  books[req.params.isbn].reviews[req.query.username] = req.query.review;
+  return res.status(200).json({message: "review added"});
 });
 
 module.exports.authenticated = regd_users;
