@@ -29,10 +29,14 @@ regd_users.post("/login", (req,res) => {
 // Add a book review
 regd_users.put("/auth/review/:isbn", (req, res) => {
   //Write your code here
-  if(authenticatedUser(req.body.username, req.body.password)){
-    books[isbn] = req.body.review;
+  if(!req.sesssion.authorization.username){
+    return res.status(403).json({message: "user not authenticated"})
   }
-  return res.status(300).json({message: "Yet to be implemented"});
+  if(!books[req.params.isbn]){
+    return res.status(404).jason({message: "book not found"})
+  }
+  books[req.params.isbn].reviews[username] = req.body.review;
+  return res.status(200).json({message: "review added"});
 });
 
 module.exports.authenticated = regd_users;
