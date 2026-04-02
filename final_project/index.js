@@ -22,7 +22,7 @@ app.use("/customer/auth/*", function auth(req,res,next){
         next();
     }
     catch(error){
-        return error;
+        return res.status(403).json({message: "Error"});
     }
 
     
