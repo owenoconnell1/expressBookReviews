@@ -7,7 +7,7 @@ const public_users = express.Router();
 
 public_users.post("/register", (req,res) => {
   //Write your code here
-  if(!(req.body.username || req.body.password)){
+  if(!req.body.username || !req.body.password){
     return res.status(400).json({message: "username and password required"});
   }
   if(isValid(req.body.username)){
@@ -28,7 +28,7 @@ public_users.get('/',function (req, res) {
 // Get book details based on ISBN
 public_users.get('/isbn/:isbn',function (req, res) {
     //Write your code here
-    if(books[req.params.ibsn]){
+    if(books[req.params.isbn]){
         return res.status(200).json(books[req.params.isbn]);
     }
  });
